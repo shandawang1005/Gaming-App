@@ -17,7 +17,9 @@ const authenticate = (req, res, next) => {
     console.error("Invalid Token Format");
     return res.status(401).json({ error: "Access denied. Invalid token format." });
   }
-
+  if (blacklistedTokens.includes(token)) {
+    return res.status(401).json({ error: "Token has been logged out." });
+  }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || "randomKey");
     console.log("Decoded Token:", decoded); // 打印解码后的 Token

@@ -49,7 +49,10 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, {
             expiresIn: "1h"
         })
-        res.json({ token })
+        res.json({
+            token,
+            user: { id: user._id, username: user.username }
+        })
 
     } catch (error) {
         console.error("Login error:", error);
@@ -63,7 +66,13 @@ router.get("/profile", authenticate, async (req, res) => {
     res.json({ message: `Welcome, ${req.user.username}!` })
 })
 
+let balcklistedTokens = []
 
+router.post("/logout", authenticate, async (req, res) => {
+    const token = req.headers.authorization.split(" ")[1]
+    balcklistedTokens.push(token)
+    res.json({ message: " Logged out successfully" })
+})
 
 
 
